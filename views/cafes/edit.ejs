@@ -1,0 +1,100 @@
+<% layout('../layouts/boilerplate') %>
+
+<div class="row">
+    <h1 class="text-center">Edit Cafe:</h1>
+</div>
+<div class="col-6 offset-3">
+    <form action="/cafes/<%=cafe._id%>?_method=PUT" method="POST" class="validation-form" novalidate
+        enctype="multipart/form-data">
+        <!--gives route and method type for form update-->
+        <div>
+            <label class="form-label" for="title">Cafe Name:</label>
+            <input class="form-control" type="text" id="title" name="cafe[title]" value="<%=cafe.title%>" required>
+        </div>
+        <br>
+        <div>
+            <label class="form-label" for="location">Location:</label>
+            <input class="form-control" type="text" id="location" name="cafe[location]" value="<%=cafe.location%>"
+                required>
+            <ul id="foundLocations" class="list-group mt-2"></ul>
+        </div>
+        <br>
+        <div>
+            <label class="form-label">Current Image:</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="deleteImage" id="deleteImage">
+                <label class="form-check-label" for="deleteImage">
+                    Delete current image? (if replacement image isn't uploaded, default image will be used)
+                </label>
+            </div>
+            <div class="mb-2">
+                <img class="img-thumbnail w-25" src="<%= cafe.image.url %>" alt="Current cafe image">
+            </div>
+        </div>
+
+        <div>
+            <label class="form-label" for="image">Upload New Image: (optional)</label>
+            <!--<input class="form-control" type="text" id="image" name="cafe[image]" value="<%=cafe.image%>" required>-->
+            <input type="file" name="image" id="image">
+        </div>
+        <br>
+        <br>
+        <label class="form-label" for="price">Price:</label>
+        <select id=price name="cafe[price]" class="form-select">
+            <% for (let key in priceFormOptions){ %>
+            <option value="<%=priceFormOptions[key]%>" <%= cafe.price === priceFormOptions[key] ? "selected" : "" %>>
+                <%=key%></option>
+            <%}%>
+                            </select>
+                                    <br>
+                            <label class="form-label" for="price">Seating Availability:</label>
+                            <select id=price name="cafe[seating]" class="form-select">
+                                <% for (let key in seatingFormOptions){ %>
+
+            <option value="<%=seatingFormOptions[key]%>"
+                <%= cafe.seating === seatingFormOptions[key] ? "selected" : "" %>><%=key%></option>
+            <%}%>
+                            </select>
+                            <br>
+                            <div class="form-check">
+                                <input class="form-check-input" name="cafe[wifi]" type="checkbox" value="true" id="wifiCheck" <%= cafe.wifi === true ? "checked" : "" %>>
+            <label class="form-check-label" for="wifiCheck">
+                Wifi Available? (check for Yes, leave unchecked for No)
+            </label>
+</div>
+<br>
+<div>
+    <label class="form-label" for="description">Description:</label>
+    <textarea class="form-control" type="text" id="description" name="cafe[description]"
+        required><%=cafe.description%></textarea>
+</div>
+<br>
+
+<button class="btn btn-primary" type="submit">Update Cafe</button>
+<br>
+<a class="icon-link icon-link-hover" href="/cafes/<%= cafe._id %>">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left"
+        viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+            d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+    </svg>
+    Go back to <%=cafe.title%>
+</a>
+<br>
+<a class="icon-link icon-link-hover" href="/cafes">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left"
+        viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+            d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+    </svg>
+    Go back to cafes
+</a>
+</form>
+</div>
+
+<%-"<script>"%>
+const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+<%-"</script>"%>
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="/javascript/locationLookup.js"></script>

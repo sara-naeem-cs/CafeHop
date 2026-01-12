@@ -1,0 +1,70 @@
+<% layout('../layouts/boilerplate') %>
+
+<div class="row">
+    <h1 class="text-center">Add a new cafe:</h1>
+</div>
+<div class="col-6 offset-3">
+    <form action="/cafes" method="POST" novalidate class="validation-form" enctype="multipart/form-data">
+        <!--gives route and method type for form update-->
+        <div>
+            <label class="form-label" for="title">Cafe Name:</label>
+            <input class="form-control" type="text" id="title" name="cafe[title]" required>
+        </div>
+        <br>
+        <div>
+            <label class="form-label" for="location">Location:</label>
+            <input class="form-control" type="text" id="location" name="cafe[location]" required>
+            <ul id="foundLocations" class="list-group mt-2"></ul>
+        </div>
+        <br>
+        <label class="form-label" for="image">Image Upload: (optional -- default image will be used otherwise)</label>
+        <input type="file" name="image" id="">
+        <br>
+        <br>
+        <label class="form-label" for="price">Price:</label>
+        <select id=price name="cafe[price]" class="form-select">
+            <% for (let key in priceFormOptions){ %>
+            <option value="<%=priceFormOptions[key]%>"><%=key%></option>
+            <%}%>
+                </select>
+                        <br>
+                <label class="form-label" for="price">Seating Availability:</label>
+                <select id=price name="cafe[seating]" class="form-select">
+                    <% for (let key in seatingFormOptions){ %>
+            <option value="<%=seatingFormOptions[key]%>"><%=key%></option>
+            <%}%>
+                </select>
+                <br>
+                <div class="form-check">
+                    <input class="form-check-input" name="cafe[wifi]" type="checkbox" value="true" id="wifiCheck">
+                    <label class="form-check-label" for="wifiCheck">
+                        Wifi Available? (check for Yes, leave unchecked for No)
+                    </label>
+                </div>
+                <br>
+                <div>
+                    <label class="form-label" for="location">Description:</label>
+                    <textarea class="form-control" type="text" id="description" name="cafe[description]"
+                        required></textarea>
+                    </div>
+                    <br>
+
+                    <button class="btn btn-primary" type="submit">Add Cafe</button>
+                    <br>
+                    <a class="icon-link icon-link-hover" href="/cafes">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-arrow-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+                        </svg>
+                        Go back to cafes
+                    </a>
+            </form>
+        </div>
+
+        <%-"<script>"%>
+            const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+            <%-"</script>"%>
+
+            <script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+            <script src="/javascript/locationLookup.js"></script>

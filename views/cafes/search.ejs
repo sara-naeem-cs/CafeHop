@@ -1,0 +1,141 @@
+<% layout('../layouts/boilerplate') %>
+<div class="row">
+    <h1 class="text-center">Find cafes near you: </h1>
+
+    <!--<div id="map" style="width: 75%; height: 300px; margin: 0 auto;"></div>-->
+    <div id="map" style="width: 75%; height: 250px; margin: 0 auto;"></div>
+
+    <div class="col-10 offset-1">
+        <form action="/cafes/search?_method=GET" method="GET">
+            <div class="row">
+                <div class="col mt-3">
+                    <label for="location" class="form-label">Search:</label>
+                    <input type="text" id="location" name="search[location]" class="form-control"
+                        placeholder="Enter location ..." />
+                    <ul id="foundLocations" class="list-group mt-2"></ul>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <!-- Seating filter -->
+                <div class="col">
+                    <label for="seating" class="form-label">Seating</label>
+                    <select class="form-select" id="seating" name="search[seating]">
+                        <option value="">Any</option>
+                        <option value="seating_available">Seating Available</option>
+                        <option value="lots">Ample Seating</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <label for="wifi" class="form-label">Wi-Fi</label>
+                    <select class="form-select" id="wifi" name="search[wifi]">
+                        <option value="">Any</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <label for="price" class="form-label">Price</label>
+                    <select class="form-select" id="price" name="search[price]">
+                        <option value="">Any</option>
+                        <option value="$">$</option>
+                        <option value="$$">$$</option>
+                        <option value="$$$">$$$</option>
+                    </select>
+                </div>
+            </div>
+            <!--<button onclick="getLocation()">Use Current Location</button>
+        <p id="demo"></p>-->
+            <button class="btn btn-primary mb-3" type="submit">Search</button>
+        </form>
+    </div>
+
+</div>
+
+<hr>
+
+
+<% for (let cafe of cafes) { %>
+
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-2">
+            <div class="ratio ratio-1x1">
+                <img src="<%= cafe.image.url %>" alt="" class="w-100 h-100 object-fit-cover">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <%=cafe.title%>
+                </h5>
+                <p class="card-text">
+                    <%=cafe.description%>
+                </p>
+                <h6 class="mt-auto text-secondary">
+                    <% let parts = []; %>
+
+                    <% if (cafe.price) { %>
+                    <% parts.push(`<b>Price:</b> ${priceDisplayOptions[cafe.price]}`); %>
+                    <% } %>
+
+                    <% if (cafe.seating) { %>
+                    <% parts.push(`<b>Seating:</b> ${seatingDisplayOptions[cafe.seating]}`); %>
+                    <% } %>
+
+                    <% if (cafe.wifi !== undefined) { %>
+                    <% parts.push(`<b>Wifi:</b> ${wifiDisplayOptions[cafe.wifi]}`); %>
+                    <% } %>
+
+                    <%- parts.join(' | ') %>
+                </h6>
+                <a class="btn btn-primary" href="/cafes/<%=cafe._id%>">
+                    <%=cafe.title%> Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% } %>
+
+
+
+
+
+
+
+
+<!-- Scripts -->
+<%-"<script>"%>
+const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+const cafes = {
+type: "FeatureCollection",
+features: <%- JSON.stringify(
+    cafes
+      .filter(cafe => cafe.geometry) // <-- only cafes with geometry
+      .map(cafe => ({
+        type: "Feature",
+        geometry: cafe.geometry,
+        properties: {
+          popUpMarkup: `
+            <h5>${cafe.title}</h5>
+            <p>${cafe.description || ""}</p>
+            <a href="/cafes/${cafe._id}">Details</a>
+          `
+        }
+      }))
+  ) %>
+};
+const mapCenter = <%- JSON.stringify(mapCenter) %>;
+
+<%- "</script>" %>
+
+<script src="/javascript/clusterMap.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="/javascript/locationLookup.js"></script>
+<script src="/javascript/currentLocation.js"></script>

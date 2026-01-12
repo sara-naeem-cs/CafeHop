@@ -1,0 +1,64 @@
+<% layout('../layouts/boilerplate') %>
+<!--<div id="map" style="width: 100%; height: 500px"></div>-->
+<div class="row">
+    <div class="col mb-3">
+        <form action="/cafes/?_method=GET" method="GET">
+
+            <label for="name" class="form-label">Search:</label>
+            <input type="text" id="name" name="search[name]" class="form-control" placeholder="Enter name ..." />
+            <ul id="foundCafes" class="list-group mt-2"></ul>
+
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+<% for (let cafe of cafes) { %>
+
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-2">
+            <div class="ratio ratio-1x1">
+                <img src="<%= cafe.image.url %>" alt="" class="w-100 h-100 object-fit-cover">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <%=cafe.title%>
+                </h5>
+                <p class="card-text">
+                    <%=cafe.description%>
+                </p>
+
+                <h6 class="mt-auto text-secondary">
+                    <% let parts = []; %>
+
+                    <% if (cafe.price) { %>
+                    <% parts.push(`<b>Price:</b> ${priceDisplayOptions[cafe.price]}`); %>
+                    <% } %>
+
+                    <% if (cafe.seating) { %>
+                    <% parts.push(`<b>Seating:</b> ${seatingDisplayOptions[cafe.seating]}`); %>
+                    <% } %>
+
+                    <% if (cafe.wifi !== undefined) { %>
+                    <% parts.push(`<b>Wifi:</b> ${wifiDisplayOptions[cafe.wifi]}`); %>
+                    <% } %>
+
+                    <%- parts.join(' | ') %>
+                </h6>
+                <a class="btn btn-primary" href="/cafes/<%=cafe._id%>">
+                    <%=cafe.title%> Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% } %>
+
+
+<!-- Axios -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/javascript/autocompleteName.js"></script>
